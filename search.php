@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'checkLogin.php';
 include 'header.php';
 $condition = "";
 if(isset($_POST['search'])){
@@ -15,8 +16,10 @@ if(isset($_POST['search'])){
 			$condition .= "emp_id = '".$emp_id."' ";
 		}
 	}
-}
 $sql = "select * from employee where ".$condition." ";
+}else{
+	$sql = "select * from employee ";	
+}
 $result = $conn->query($sql);
 ?>
 <section class="vbox">
@@ -58,6 +61,39 @@ $result = $conn->query($sql);
                 <h3 class="m-b-none">Workset</h3>
                 <small>Welcome back, <?php echo $_SESSION['email'];?></small>
               </div>
+              <div style="margin-top:1%;color:green">
+<?php if(isset($_REQUEST['msg'])){?>
+	<span class="errorSuccess" style="display: block;"><?php echo $_REQUEST['msg'];?></span>
+<?php }?>
+</div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <form data-validate="parsley" action="search.php" method="POST">
+                    <section class="panel panel-default">
+                    <div style="margin-left:5%;">
+	                    Fill any one of these search field
+                    </div>
+	                    <span style="margin-left:5%;" class="error" id="searchValidation"></span>
+                      <div class="panel-body">
+                        <div class="form-group col-sm-3">
+                          <label>Employee Name</label>
+                          <input type="text" name="emp_first_name" id="firstName"class="form-control" placeholder="First Name" data-required="true">                        
+                        	<span class="error" id="firstName_error"></span>
+                        </div>
+                        <div class="form-group col-sm-3">
+                          <label>Employee Id</label>
+                          <input type="text" name="emp_id" id="idEmp" class="form-control" placeholder="Employee Id" data-required="true">                        
+                          <span class="error" id="idEmp_error"></span>
+                        </div>
+                        <div class="form-group col-sm-3">
+                          <button type="submit" id="searchEmployee"name="search" class="btn btn-success btn-s-xs" style="margin-top:9%">Search Employee</button>
+                        </div>
+                      </div>
+                      
+                    </section>
+                  </form>
+                </div>
+              </div>
               <section class="panel panel-default">
                 <header class="panel-heading">
                   Employees
@@ -88,7 +124,8 @@ $result = $conn->query($sql);
                         <td width="10%"><?php echo $row['job_title'];?></td>
                         <td width="10%"><?php echo $row['salary'];?></td>
                         <td width="10%">
-	                        <a href="edit.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="Edit"><i class="fa fa-pencil pull-left text"></i></a>|
+                        	<a href="profile.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="View Profile"><i class="fa fa-search pull-left text"></i></a>|
+	                        <a href="edit.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="Edit"><i class="fa fa-pencil  text"></i></a>|
 	                        <a href="delete.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" class="delete" title="" style="" data-original-title="Delete"><i class="  pull-right fa fa-times text-danger text"></i></a>
                         </td>
                       </tr>
@@ -116,5 +153,22 @@ $result = $conn->query($sql);
 			return false ;
 				}
 		);
-	  
+	  $("#searchEmployee").click(function(){
+		  var empName = $("#firstName").val();
+		  var empId = $("#idEmp").val();
+		  if(empName == "" && empId == ""){
+			  $("#searchValidation").text("Please provide atleast employee name or employee id");
+			  return false;
+		  }else{
+			  $("#searchValidation").text();
+		  }
+		  if(isNaN(empId)){
+			  $("#idEmp_error").text("Please provide number only");
+			  return false;
+			}
+		  if(!isNaN(empName) && empName!=""){
+			  $("#firstName_error").text("Please provide text only");
+			  return false;
+		}
+	  });
   </script>

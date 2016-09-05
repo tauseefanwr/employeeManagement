@@ -1,12 +1,7 @@
 <?php
 session_start();
+include 'checkLogin.php';
 include 'header.php';
-if(isset($_SESSION['sid']) ){
-	if($_SESSION['sid']!=session_id())
-		header('Location: index.php');
-}else{
-	header('Location: index.php');
-}
 $sql = "select * from employee";
 $result = $conn->query($sql);
 ?>
@@ -31,7 +26,7 @@ $result = $conn->query($sql);
           </a>
           <ul class="dropdown-menu animated fadeInRight">
             <li>
-              <a href="logout.php" data-toggle="ajaxModal" >Logout</a>
+              <a href="logout.php">Logout</a>
             </li>
           </ul>
         </li>
@@ -49,6 +44,11 @@ $result = $conn->query($sql);
                 <h3 class="m-b-none">Workset</h3>
                 <small>Welcome back, <?php echo $_SESSION['email'];?></small>
               </div>
+              <div style="margin-top:1%;;color:green">
+<?php if(isset($_REQUEST['msg'])){?>
+	<span class="errorSuccess" style="display: block;"><?php echo $_REQUEST['msg'];?></span>
+<?php }?>
+</div>
               <div class="row">
                 <div class="col-sm-12">
                   <form data-validate="parsley" action="search.php" method="POST">
@@ -107,7 +107,8 @@ $result = $conn->query($sql);
                         <td width="10%"><?php echo $row['job_title'];?></td>
                         <td width="10%"><?php echo $row['salary'];?></td>
                         <td width="10%">
-	                        <a href="edit.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="Edit"><i class="fa fa-pencil pull-left text"></i></a>|
+                        <a href="profile.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="View Profile"><i class="fa fa-search pull-left text"></i></a>|
+	                        <a href="edit.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" title="" style="" data-original-title="Edit"><i class="fa fa-pencil  text"></i></a>|
 	                        <a href="delete.php?emp_id=<?php echo $row['emp_id'];?>" data-toggle="tooltip" class="delete" title="" style="" data-original-title="Delete"><i class="  pull-right fa fa-times text-danger text"></i></a>
                         </td>
                       </tr>
@@ -135,5 +136,6 @@ $result = $conn->query($sql);
 			return false ;
 				}
 		);
-	  
+  $('.errorSuccess').delay(2000).fadeOut('slow');
+  
   </script>

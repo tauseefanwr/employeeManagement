@@ -1,8 +1,11 @@
 <?php 
 session_start();
 if(isset($_SESSION['sid']) ){
-	if($_SESSION['sid']==session_id())
-	header('Location: employeeList.php');
+if($_SESSION['sid']==session_id() && $_SESSION['logged_in']=='1'){
+		header('Location: employeeList.php');
+	}else{
+		//header('Location: index.php');
+	}
 }
 include 'header.php';
 
@@ -25,7 +28,6 @@ include 'header.php';
             <label class="control-label">Password</label>
             <input type="password" name="password" id="inputPassword" placeholder="Password" class="form-control input-lg">
           </div>
-          <a href="#" class="pull-right m-t-xs" id="forgotPass"><small>Forgot password?</small></a>
           <button type="submit" class="btn btn-primary">Sign in</button>
         </form>
       </section>

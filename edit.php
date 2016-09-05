@@ -45,6 +45,11 @@ $result = $conn->query($sql);
               <div class="m-b-md">
                 <small>Welcome back, <?php echo $_SESSION['email'];?></small>
               </div>
+              <div style="margin-top:1%;;color:green">
+<?php if(isset($_REQUEST['msg'])){?>
+	<span class="errorSuccess" style="display: block;"><?php echo $_REQUEST['msg'];?></span>
+<?php }?>
+</div>
               <div class="row">
                 <div class="col-sm-10">
                   <form data-validate="parsley" action="addemployee.php" method="POST">
@@ -61,7 +66,8 @@ $result = $conn->query($sql);
                         <div class="form-group">
                         <input type="hidden" name="emp_id" value="<?php echo $row['emp_id'];?>">
                           <label>Employee First Name</label>
-                          <input type="text" name="emp_first_name" value="<?php echo $row['emp_first_name'];?>" class="form-control" placeholder="First Name" data-required="true">                        
+                          <input type="text" name="emp_first_name" id = "emp_first_name" value="<?php echo $row['emp_first_name'];?>" class="form-control" placeholder="First Name" data-required="true">                        
+                        <span class="error" id = "emp_first_name_error"></span>
                         </div>
                         <div class="form-group">
                           <label>Employee Last Name</label>
@@ -69,23 +75,27 @@ $result = $conn->query($sql);
                         </div>
                         <div class="form-group">
                           <label>Email</label>
-                          <input type="text" name="emp_email" value="<?php echo $row['emp_email'];?>" class="form-control" data-type="email" placeholder="email" data-required="true">                        
+                          <input type="text" name="emp_email" id = "emp_email" value="<?php echo $row['emp_email'];?>" class="form-control" data-type="email" placeholder="email" data-required="true">                        
+                        <span class="error" id = "emp_email_error"></span>
                         </div>
                         <div class="form-group">
                           <label>Date of birth</label>
-                          <input type="text" name="emp_dob" value="<?php echo $row['emp_dob'];?>" class="input-sm input-s datepicker-input form-control" data-date-format="yyyy-mm-dd" data-type="phone" placeholder="Date" data-required="true">
+                          <input type="text" name="emp_dob" id = "emp_dob" value="<?php echo $row['emp_dob'];?>" class="input-sm input-s datepicker-input form-control" data-date-format="yyyy-mm-dd" data-type="phone" placeholder="Date" data-required="true">
+                        <span class="error" id = "emp_dob_error"></span>
                         </div>
                         <div class="form-group">
                           <label>Job Title</label>
-                          <input type="text" name="emp_job_title" value="<?php echo $row['job_title'];?>" class="form-control" data-type="phone" placeholder="Job Title" data-required="true">
+                          <input type="text" name="emp_job_title" id = "emp_job_title" value="<?php echo $row['job_title'];?>" class="form-control" data-type="phone" placeholder="Job Title" data-required="true">
+                        <span class="error" id = "emp_job_title_error"></span>
                         </div>
                         <div class="form-group">
                           <label>Salary</label>
-                          <input type="text" name="emp_salary" value="<?php echo $row['salary'];?>" class="form-control" data-type="phone" placeholder="Salary" data-required="true">
+                          <input type="text" name="emp_salary" id = "emp_salary" value="<?php echo $row['salary'];?>" class="form-control" data-type="phone" placeholder="Salary" data-required="true">
+                        <span class="error" id = "emp_salary_error"></span>
                         </div>
                       </div>
                       <footer class="panel-footer text-right bg-light lter">
-                        <button type="submit" class="btn btn-success btn-s-xs">Update This Employee</button>
+                        <button type="submit" id="addEmployee" class="btn btn-success btn-s-xs">Update This Employee</button>
                       </footer>
                     </section>
                     <?php }}?>
@@ -101,3 +111,60 @@ $result = $conn->query($sql);
     </section>
   </section>
   <?php include 'footer.php';?>
+  <script>
+  $("#addEmployee").click(function(){
+		var f_name = $("#emp_first_name").val();
+		var email = $("#emp_email").val();
+		var dob = $("#emp_dob").val();
+		var job_title = $("#emp_job_title").val();
+		var salary = $("#emp_salary").val();
+		if(f_name==""){
+			$("#emp_first_name_error").text("Please enter first name.");
+			return false;
+		}else if(!isNaN(f_name)){
+			$("#emp_first_name_error").text("Please enter text only.");
+			return false;
+		}
+		if(email == ""){
+			$("#emp_email_error").text("Please enter email Id.");
+			return false;
+		}else if(!IsEmail(email)){
+			$("#emp_email_error").text("Please enter valid email Id.");
+			return false;
+		}else{
+			$("#emp_email_error").text("");
+		}
+		if(dob==""){
+			$("#emp_dob_error").text("Please select date of birth.");
+			return false;
+		}else{
+			$("#emp_dob_error").text("");
+			}
+		if(job_title==""){
+			$("#emp_job_title_error").text("Please enter job title.");
+			return false;
+		}else if(!isNaN(job_title)){
+			$("#emp_job_title_error").text("Please enter text only.");
+			return false;
+		}else{
+			$("#emp_job_title_error").text("");
+		}
+		if(salary==""){
+			$("#emp_salary_error").text("Please enter salary.");
+			return false;
+		}else if(isNaN(salary)){
+			$("#emp_salary_error").text("Please enter number only");
+			return false;
+		}else{
+			$("#emp_salary_error").text("");
+			}
+		function IsEmail(email) {
+			  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+			  if(!regex.test(email)){
+				return false;
+		}else
+			return true;
+			}
+	});
+  $('.errorSuccess').delay(2000).fadeOut('slow');
+  </script>

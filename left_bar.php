@@ -7,7 +7,7 @@
                 <nav class="nav-primary hidden-xs">
                   <ul class="nav">
                     <li >
-                      <a href="#pages"  >
+                      <a href="#pages" id="expanding" >
                         <i class="fa fa-file-text icon">
                           <b class="bg-primary"></b>
                         </i>
